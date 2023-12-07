@@ -1,0 +1,136 @@
+asyncapi: 2.4.0
+info:
+  title: Async API Specification Document for Applications
+  version: 2.5.0
+servers:
+  cluster:
+    url: localhost:9092
+    description: Kafka instance.
+    protocol: kafka
+    security:
+    - broker: []
+  schema-registry:
+    url: http://localhost:8081
+    description: Kafka Schema Registry Server
+    protocol: kafka
+    security:
+    - schemaRegistry: []
+channels:
+  demo:
+    subscribe:
+      operationId: DemoSubscribe
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          groupId:
+            type: string
+          clientId:
+            type: string
+      message:
+        $ref: '#/components/messages/DemoMessage'
+    bindings:
+      kafka:
+        bindingVersion: 0.4.0
+        partitions: 1
+        topicConfiguration: {}
+  sample:
+    subscribe:
+      operationId: SampleSubscribe
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          groupId:
+            type: string
+          clientId:
+            type: string
+      message:
+        $ref: '#/components/messages/SampleMessage'
+    bindings:
+      kafka:
+        bindingVersion: 0.4.0
+        partitions: 1
+        topicConfiguration: {}
+  test-topic:
+    subscribe:
+      operationId: TestTopicSubscribe
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          groupId:
+            type: string
+          clientId:
+            type: string
+      message:
+        $ref: '#/components/messages/TestTopicMessage'
+    bindings:
+      kafka:
+        bindingVersion: 0.4.0
+        partitions: 1
+        topicConfiguration:
+          max.message.bytes: 64000
+        x-configs:
+          flush.messages: "1"
+components:
+  messages:
+    DemoMessage:
+      schemaFormat: application/schema+json;version=draft-07
+      contentType: application/json
+      payload:
+        properties:
+          name:
+            type: string
+        type: object
+      name: DemoMessage
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          key:
+            type: string
+    SampleMessage:
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      contentType: application/avro
+      payload:
+        fields:
+        - name: field1
+          type: string
+        - default: 0
+          name: field2
+          type: int
+        name: test
+        type: record
+      name: SampleMessage
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          key:
+            type: string
+    TestTopicMessage:
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      contentType: application/avro
+      payload:
+        fields:
+        - name: name
+          type: string
+        - default: 20
+          name: age
+          type: int
+        name: test
+        type: record
+      name: TestTopicMessage
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          key:
+            type: string
+  securitySchemes:
+    broker:
+      type: userPassword
+      x-configs:
+        sasl.mechanisms: PLAIN
+        sasl.password: '{{CLUSTER_API_SECRET}}'
+        sasl.username: '{{CLUSTER_API_KEY}}'
+        security.protocol: sasl_ssl
+    schemaRegistry:
+      type: userPassword
+      x-configs:
+        basic.auth.user.info: '{{SCHEMA_REGISTRY_API_KEY}}:{{SCHEMA_REGISTRY_API_SECRET}}'
