@@ -1,7 +1,7 @@
 asyncapi: 2.4.0
 info:
   title: Async API Specification Document for Applications
-  version: 2.5.0
+  version: 1.0.0
 servers:
   cluster:
     url: localhost:9092
@@ -32,6 +32,7 @@ channels:
       kafka:
         bindingVersion: 0.4.0
         partitions: 1
+        replicas: 1
         topicConfiguration: {}
   sample:
     subscribe:
@@ -49,7 +50,31 @@ channels:
       kafka:
         bindingVersion: 0.4.0
         partitions: 1
+        replicas: 1
         topicConfiguration: {}
+  test-rep:
+    subscribe:
+      operationId: TestRepSubscribe
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          groupId:
+            type: string
+          clientId:
+            type: string
+      message:
+        $ref: '#/components/messages/TestRepMessage'
+    bindings:
+      kafka:
+        bindingVersion: 0.4.0
+        partitions: 5
+        replicas: 1
+        topicConfiguration:
+          retention.ms: 1.2345e+07
+          delete.retention.ms: 3.6e+06
+          max.message.bytes: 64000
+        x-configs:
+          flush.messages: "1"
   test-topic:
     subscribe:
       operationId: TestTopicSubscribe
@@ -66,6 +91,7 @@ channels:
       kafka:
         bindingVersion: 0.4.0
         partitions: 1
+        replicas: 1
         topicConfiguration:
           max.message.bytes: 64000
         x-configs:
@@ -99,6 +125,24 @@ components:
         name: test
         type: record
       name: SampleMessage
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          key:
+            type: string
+    TestRepMessage:
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      contentType: application/avro
+      payload:
+        fields:
+        - name: name
+          type: string
+        - default: 20000
+          name: money
+          type: int
+        name: account
+        type: record
+      name: TestRepMessage
       bindings:
         kafka:
           bindingVersion: 0.3.0

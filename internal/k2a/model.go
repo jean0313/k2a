@@ -226,6 +226,7 @@ type channelDetails struct {
 type ChannelBinding struct {
 	BindingVersion     string                   `json:"bindingVersion,omitempty"`
 	Partitions         int32                    `json:"partitions,omitempty"`
+	Replicas           int16                    `json:"replicas,omitempty"`
 	TopicConfiguration topicConfigurationExport `json:"topicConfiguration,omitempty"`
 	XConfigs           map[string]string        `json:"x-configs,omitempty"`
 }

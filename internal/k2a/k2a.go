@@ -10,7 +10,6 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/swaggest/go-asyncapi/reflector/asyncapi-2.4.0"
 	"github.com/swaggest/go-asyncapi/spec-2.4.0"
-	"go.uber.org/zap"
 )
 
 const protobufErrorMessage = "protobuf is not supported"
@@ -21,7 +20,6 @@ func ExportAsyncApi(config K2AConfig) error {
 		return err
 	}
 
-	zap.L().Info("topic info", zap.Any("data", details.topics))
 	reflector := createAsyncReflector(config)
 	messages := make(map[string]spec.Message)
 	channelCount := 0
@@ -188,6 +186,7 @@ func processBindings(details *AccountDetails) error {
 	var channelBindings any = ChannelBinding{
 		BindingVersion:     "0.4.0",
 		Partitions:         details.channelDetails.currentTopic.NumPartitions,
+		Replicas:           details.channelDetails.currentTopic.ReplicationFactor,
 		TopicConfiguration: topicConfigs,
 		XConfigs:           customConfigMap,
 	}
