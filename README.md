@@ -4,7 +4,33 @@
 - Kafka Cluster
 - SchemaRegistry Cluster
 
+### Init
+```bash
+# kafka broker: localhost:9092
+# init kafka test topic
+bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+    --create \
+    --topic test-topic \
+    --partitions 5 \
+    --replication-factor 1 \
+    --config retention.ms=720000 \
+    --config delete.retention.ms=360000 \
+    --config max.message.bytes=64000 \
+    --config flush.messages=1
+
+# schema registry cluster: http://localhost:8081
+# init registry schema
+curl localhost:8081/subjects/test-topic-value/versions \
+    -H 'Content-Type: application/json' \
+    -d '{ "schema": "{ \"type\": \"record\", \"name\": \"test-topic\", \"fields\": [ { \"type\": \"string\", \"name\": \"field1\" }, { \"type\": \"int\", \"name\": \"field2\", \"default\": 0}] }", "schemaType": "AVRO"}'
+```
+
 ## Build
+
+### Pre-Requisites
+go version go1.21.5
+
+
 ```bash
 # for macos x64
 make macos
