@@ -22,7 +22,7 @@ bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 # init registry schema
 curl localhost:8081/subjects/test-topic-value/versions \
     -H 'Content-Type: application/json' \
-    -d '{ "schema": "{ \"type\": \"record\", \"name\": \"test-topic\", \"fields\": [ { \"type\": \"string\", \"name\": \"field1\" }, { \"type\": \"int\", \"name\": \"field2\", \"default\": 0}] }", "schemaType": "AVRO"}'
+    -d '{ "schema": "{ \"type\": \"record\", \"name\": \"test-topic\", \"fields\": [ { \"type\": \"string\", \"name\": \"field1\" }, { \"type\": \"int\", \"name\": \"field2\", \"default\": 0}] }", "schemaType": "AVRO"}'    
 ```
 
 ## Build
@@ -64,5 +64,11 @@ Flags:
       --tls-skip-verify       Whether to skip TLS server cert verification (default true)
       --topics string         Topics to export
       --use-tls               Use TLS to communicate with the kafka cluster
+
+```
+
+### Example
+```bash
+cli k2a --topics test-topic
 
 ```
