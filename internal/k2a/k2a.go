@@ -184,13 +184,16 @@ func processBindings(details *AccountDetails) error {
 	}
 
 	var channelBindings any = ChannelBinding{
-		BindingVersion:     "0.4.0",
+		BindingVersion:     "latest",
 		Partitions:         details.channelDetails.currentTopic.NumPartitions,
 		Replicas:           details.channelDetails.currentTopic.ReplicationFactor,
 		TopicConfiguration: topicConfigs,
 		XConfigs:           customConfigMap,
 	}
-	messageBindings := spec.MessageBindingsObject{Kafka: &spec.KafkaMessage{Key: &spec.KafkaMessageKey{Schema: map[string]any{"type": "string"}}}}
+	messageBindings := spec.MessageBindingsObject{
+		Kafka: &spec.KafkaMessage{
+			Key: &spec.KafkaMessageKey{Schema: map[string]any{"type": "string"}},
+		}}
 	operationBindings := spec.OperationBindingsObject{Kafka: &spec.KafkaOperation{
 		GroupID:  &spec.KafkaOperationGroupID{Schema: map[string]any{"type": "string"}},
 		ClientID: &spec.KafkaOperationClientID{Schema: map[string]any{"type": "string"}},

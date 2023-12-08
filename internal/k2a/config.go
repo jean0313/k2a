@@ -8,6 +8,11 @@ type K2AConfig struct {
 	Topics            string
 	File              string
 	SpecVersion       string
+	Certificate       string
+	KeyFile           string
+	CAFile            string
+	TLSSkipVerify     bool
+	UseTLS            bool
 }
 
 func (c *K2AConfig) GetTopics() []string {

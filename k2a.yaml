@@ -30,7 +30,7 @@ channels:
         $ref: '#/components/messages/DemoMessage'
     bindings:
       kafka:
-        bindingVersion: 0.4.0
+        bindingVersion: latest
         partitions: 1
         replicas: 1
         topicConfiguration: {}
@@ -48,7 +48,7 @@ channels:
         $ref: '#/components/messages/SampleMessage'
     bindings:
       kafka:
-        bindingVersion: 0.4.0
+        bindingVersion: latest
         partitions: 1
         replicas: 1
         topicConfiguration: {}
@@ -66,7 +66,7 @@ channels:
         $ref: '#/components/messages/TestRepMessage'
     bindings:
       kafka:
-        bindingVersion: 0.4.0
+        bindingVersion: latest
         partitions: 5
         replicas: 1
         topicConfiguration:
@@ -89,7 +89,7 @@ channels:
         $ref: '#/components/messages/TestTopicMessage'
     bindings:
       kafka:
-        bindingVersion: 0.4.0
+        bindingVersion: latest
         partitions: 1
         replicas: 1
         topicConfiguration:
