@@ -163,6 +163,7 @@ func (a *AccountDetails) buildMessageEntity() *spec.MessageEntity {
 	if a.channelDetails.unmarshalledSchema != nil {
 		entityProducer.WithPayload(a.channelDetails.unmarshalledSchema)
 	}
+	entityProducer.MessageID = msgName(a.channelDetails.currentTopic.GetTopicName())
 	return entityProducer
 }
 

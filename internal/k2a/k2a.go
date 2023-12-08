@@ -184,7 +184,7 @@ func processBindings(details *AccountDetails) error {
 	}
 
 	var channelBindings any = ChannelBinding{
-		BindingVersion:     "latest",
+		BindingVersion:     "0.4.0",
 		Partitions:         details.channelDetails.currentTopic.NumPartitions,
 		Replicas:           details.channelDetails.currentTopic.ReplicationFactor,
 		TopicConfiguration: topicConfigs,
@@ -210,6 +210,7 @@ func processBindings(details *AccountDetails) error {
 func createAsyncReflector(config K2AConfig) asyncapi.Reflector {
 	return asyncapi.Reflector{
 		Schema: &spec.AsyncAPI{
+			DefaultContentType: "application/json",
 			Servers: map[string]spec.ServersAdditionalProperties{
 				"cluster": {Server: &spec.Server{
 					URL:         config.KafkaUrl,
@@ -225,8 +226,16 @@ func createAsyncReflector(config K2AConfig) asyncapi.Reflector {
 				}},
 			},
 			Info: spec.Info{
-				Version: config.SpecVersion,
-				Title:   "Async API Specification Document for Applications",
+				Version:     config.SpecVersion,
+				Title:       "Async API Specification Document for Applications",
+				Description: "Async API Specification Document for Applications",
+				Contact: &spec.Contact{
+					Name: "API Support",
+				},
+				License: &spec.License{
+					Name: "Apache 2.0",
+					URL:  "https://www.apache.org/licenses/LICENSE-2.0.html",
+				},
 			},
 		},
 	}
