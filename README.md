@@ -60,7 +60,7 @@ Flags:
       --key-file string       The optional key file for client authentication
       --kurl string           Kafka cluster broker url (default "localhost:9092")
       --rurl string           Schema registry url (default "http://localhost:8081")
-      --spec-version string   Version number of the output file. (default 1.0.0) (default "1.0.0")
+      --spec-version string   Version number of the output file. (default 1.0.0)
       --tls-skip-verify       Whether to skip TLS server cert verification (default true)
       --topics string         Topics to export
       --use-tls               Use TLS to communicate with the kafka cluster
