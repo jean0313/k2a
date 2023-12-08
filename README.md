@@ -1,4 +1,4 @@
-# Cli for Generate AsyncApi Specification from Kafka
+# Cli to Generate AsyncApi Specification from Kafka
 
 ## Setup
 - Kafka Cluster
