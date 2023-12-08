@@ -74,4 +74,4 @@ cli k2a --topics test-topic
 ```
 
 ### Verify
-[<img src="https://studio.asyncapi.com/img/logo-studio.svg"](https://studio.asyncapi.com/)
+[![Studio](https://studio.asyncapi.com/img/logo-studio.svg)](https://studio.asyncapi.com/)
