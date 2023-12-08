@@ -72,3 +72,6 @@ Flags:
 cli k2a --topics test-topic
 
 ```
+
+### Verify
+![Studio](https://studio.asyncapi.com/img/logo-studio.svg)

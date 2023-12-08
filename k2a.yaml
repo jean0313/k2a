@@ -41,24 +41,6 @@ channels:
         partitions: 1
         replicas: 1
         topicConfiguration: {}
-  sample:
-    subscribe:
-      operationId: SampleSubscribe
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          groupId:
-            type: string
-          clientId:
-            type: string
-      message:
-        $ref: '#/components/messages/SampleMessage'
-    bindings:
-      kafka:
-        bindingVersion: 0.4.0
-        partitions: 1
-        replicas: 1
-        topicConfiguration: {}
   test-rep:
     subscribe:
       operationId: TestRepSubscribe
@@ -115,25 +97,6 @@ components:
             type: string
         type: object
       name: DemoMessage
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          key:
-            type: string
-    SampleMessage:
-      schemaFormat: application/vnd.apache.avro;version=1.9.0
-      contentType: application/avro
-      messageId: SampleMessage
-      payload:
-        fields:
-        - name: field1
-          type: string
-        - default: 0
-          name: field2
-          type: int
-        name: test
-        type: record
-      name: SampleMessage
       bindings:
         kafka:
           bindingVersion: 0.3.0
