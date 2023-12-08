@@ -3,7 +3,6 @@ package k2a
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
@@ -14,10 +13,10 @@ import (
 
 const protobufErrorMessage = "protobuf is not supported"
 
-func ExportAsyncApi(config K2AConfig) error {
+func ExportAsyncApi(config K2AConfig) ([]byte, error) {
 	details, err := GetAccountDetails(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	reflector := createAsyncReflector(config)
@@ -39,7 +38,7 @@ func ExportAsyncApi(config K2AConfig) error {
 				if err.Error() == protobufErrorMessage {
 					continue
 				}
-				return err
+				return nil, err
 			}
 
 			channelCount++
@@ -48,7 +47,7 @@ func ExportAsyncApi(config K2AConfig) error {
 			}
 			reflector, err = addChannel(reflector, details.channelDetails)
 			if err != nil {
-				return err
+				return nil, err
 			}
 		}
 	}
@@ -60,10 +59,10 @@ func ExportAsyncApi(config K2AConfig) error {
 	addComponents(reflector, messages)
 	yaml, err := reflector.Schema.MarshalYAML()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	os.WriteFile(config.File, yaml, 0644)
-	return nil
+	// os.WriteFile(config.File, yaml, 0644)
+	return yaml, nil
 }
 
 func addComponents(reflector asyncapi.Reflector, messages map[string]spec.Message) asyncapi.Reflector {

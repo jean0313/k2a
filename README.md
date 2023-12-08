@@ -43,6 +43,8 @@ make windows
 ```
 
 ## Run
+
+### cli k2a help
 ```
 Export an AsyncAPI specification for a Kafka cluster and Schema Registry.
 
@@ -67,11 +69,23 @@ Flags:
 
 ```
 
-### Example
+### cli generate example
 ```bash
 cli k2a --topics test-topic
 
 ```
 
-### Verify
+### cli ws help
+```
+Start web server to export topics
+
+Usage:
+  cli ws [flags]
+
+Flags:
+  -h, --help   help for ws
+```
+
+
+## Verify
 [![Studio](https://studio.asyncapi.com/img/logo-studio.svg)](https://studio.asyncapi.com/)

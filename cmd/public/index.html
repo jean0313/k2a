@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <div id="app">
+        <el-form ref="form" :model="form" label-width="120px">
+            <el-form-item label="Topics">
+                <el-input v-model="form.topics"></el-input>
+            </el-form-item>
+            <el-form-item label="AsyncApi">
+                <el-input type="textarea" autosize v-model="form.yaml"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">Create</el-button>
+                <el-button @click="onCancel">Cancel</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    var Main = {
+        data() {
+            return {
+                form: {
+                    topics: '',
+                    yaml: ''
+                }
+            }
+        },
+        methods: {
+            onSubmit() {
+                this.form.yaml = '';
+                const options = {
+                    method: 'POST',
+                    url: '/export',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.form),
+                };
+                fetch('/export', options)
+                    .then(response => response.text())
+                    .then(response => {
+                        this.form.yaml = response;
+                    })
+                    .catch(err => console.error(err));
+            },
+            onCancel() {
+                this.form.topics = '';
+                this.form.yaml = '';
+            }
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+
+</html>

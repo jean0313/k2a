@@ -5,21 +5,28 @@ package cmd
 
 import (
 	"k2a/internal/k2a"
+	"os"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var config = k2a.K2AConfig{}
+
+const KAFKA_URL = "localhost:9092"
+const SCHEMA_REGISTRY_URL = "http://localhost:8081"
 
 var k2aCmd = &cobra.Command{
 	Use:   "k2a",
 	Short: "Export an AsyncAPI specification",
 	Long:  `Export an AsyncAPI specification for a Kafka cluster and Schema Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := k2a.ExportAsyncApi(config)
+		zap.L().Info("cli config", zap.Any("config", config))
+		yaml, err := k2a.ExportAsyncApi(config)
 		if err != nil {
 			panic(err)
 		}
+		os.WriteFile(config.File, yaml, 0644)
 	},
 	Example: `cli k2a --kurl prod.kafka.com:9092 --rurl http://prod.schema-registry.com --topics demo,sample`,
 }
@@ -27,8 +34,8 @@ var k2aCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(k2aCmd)
 
-	k2aCmd.Flags().StringVar(&config.KafkaUrl, "kurl", "localhost:9092", "Kafka cluster broker url")
-	k2aCmd.Flags().StringVar(&config.SchemaRegistryUrl, "rurl", "http://localhost:8081", "Schema registry url")
+	k2aCmd.Flags().StringVar(&config.KafkaUrl, "kurl", KAFKA_URL, "Kafka cluster broker url")
+	k2aCmd.Flags().StringVar(&config.SchemaRegistryUrl, "rurl", SCHEMA_REGISTRY_URL, "Schema registry url")
 	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export")
 	k2aCmd.Flags().StringVar(&config.File, "file", "k2a.yaml", "Output file name")
 	k2aCmd.Flags().StringVar(&config.SpecVersion, "spec-version", "1.0.0", "Version number of the output file.")
