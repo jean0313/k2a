@@ -10,15 +10,21 @@
 <body>
     <div id="app">
         <el-form ref="form" :model="form" label-width="120px">
-            <el-form-item label="Topics">
-                <el-input v-model="form.topics"></el-input>
+            <el-form-item label="Topics" :rules="[{ required: true, message: 'topics is required' }]">
+                <el-input placeholder="Example: user-created,sms-notified" v-model="form.topics"></el-input>
+            </el-form-item>
+            <el-form-item label="Kafka">
+                <el-input placeholder="Default: localhost:9092" v-model="form.kafkaUrl"></el-input>
+            </el-form-item>
+            <el-form-item label="Registry">
+                <el-input placeholder="Default: http://localhost:8081" v-model="form.schemaRegistryUrl"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">Generate</el-button>
+                <el-button @click="onCancel">Reset</el-button>
             </el-form-item>
             <el-form-item label="AsyncApi">
                 <el-input type="textarea" autosize v-model="form.yaml"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">Create</el-button>
-                <el-button @click="onCancel">Cancel</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -33,12 +39,21 @@
             return {
                 form: {
                     topics: '',
+                    kafkaUrl: '',
+                    schemaRegistryUrl: '',
                     yaml: ''
                 }
             }
         },
         methods: {
             onSubmit() {
+                if (this.form.topics === '') {
+                    this.$message({
+                        message: 'Warning, topics should not be empty.',
+                        type: 'warning'
+                    });
+                    return
+                }
                 this.form.yaml = '';
                 const options = {
                     method: 'POST',
@@ -52,12 +67,18 @@
                     .then(response => response.text())
                     .then(response => {
                         this.form.yaml = response;
+                        this.$message({
+                            message: 'Success',
+                            type: 'success'
+                        });
                     })
                     .catch(err => console.error(err));
             },
             onCancel() {
                 this.form.topics = '';
                 this.form.yaml = '';
+                this.form.kafkaUrl = '';
+                this.form.schemaRegistryUrl = '';
             }
         }
     }
