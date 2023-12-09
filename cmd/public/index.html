@@ -72,7 +72,9 @@
                             type: 'success'
                         });
                     })
-                    .catch(err => console.error(err));
+                    .catch(err => {
+                        this.$message.error(err + ", maybe web server down");
+                    });
             },
             onCancel() {
                 this.form.topics = '';
