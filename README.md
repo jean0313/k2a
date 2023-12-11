@@ -91,4 +91,4 @@ Flags:
 
 
 ## Verify
-[![Studio](https://studio.asyncapi.com/img/logo-studio.svg)](https://studio.asyncapi.com/)
+<a href="https://studio.asyncapi.com/" rel="nofollow"><img alt="Studio" src="https://studio.asyncapi.com/img/logo-studio.svg" style="max-width: 100%;background-color: black;padding: 0 10px;"></a>
