@@ -83,7 +83,8 @@ Usage:
   cli ws [flags]
 
 Flags:
-  -h, --help   help for ws
+  -h, --help          help for ws
+      --port string   server port to listen (default "8080")
 ```
 
 ![ws](docs/ws.jpg)
