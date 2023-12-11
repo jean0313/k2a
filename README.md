@@ -91,4 +91,4 @@ Flags:
 
 
 ## Verify
-[![Studio](https://studio.asyncapi.com/img/logo-studio.svg)](https://studio.asyncapi.com/)
+[![Studio](docs/studio.jpg)](https://studio.asyncapi.com/)
