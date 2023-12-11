@@ -77,7 +77,7 @@ cli k2a --topics test-topic
 
 ### cli ws help
 ```
-Start web server to export topics
+Start web server to export topics, browser to localhost:8080
 
 Usage:
   cli ws [flags]
@@ -85,6 +85,8 @@ Usage:
 Flags:
   -h, --help   help for ws
 ```
+
+![ws](docs/ws.jpg)
 
 
 ## Verify

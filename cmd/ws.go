@@ -20,6 +20,8 @@ import (
 //go:embed public
 var pub embed.FS
 
+var port string
+
 var wsCmd = &cobra.Command{
 	Use:   "ws",
 	Short: "Start web server",
@@ -29,8 +31,8 @@ var wsCmd = &cobra.Command{
 		http.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(fs))))
 		http.HandleFunc("/export", export)
 
-		zap.L().Info("Starting server listen on 8080, http://localhost:8080\n")
-		if err := http.ListenAndServe(":8080", nil); err != nil {
+		zap.L().Info(fmt.Sprintf("Starting server listen on %s, http://localhost:%s\n", port, port))
+		if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 			log.Fatal(err)
 		}
 	},
@@ -38,6 +40,8 @@ var wsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(wsCmd)
+
+	wsCmd.Flags().StringVar(&port, "port", "8080", "server port to listen")
 }
 
 func export(w http.ResponseWriter, r *http.Request) {
