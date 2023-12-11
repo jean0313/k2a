@@ -1,13 +1,19 @@
-VERSION = $(shell git describe --always --dirty)
+VERSION := $(shell git describe --always --dirty)
 
-linux: main.go
-    GOOS=linux \
-      go build -a -ldflags="-X main.Version=$(VERSION)" -o build/cli
+.PHONY: clean
 
-windows: main.go
-	GOOS=windows GOARCH=amd64\
-      go build -a -ldflags="-X main.Version=$(VERSION)" -o build/cli.exe
+all: linux windows macos
 
-macos: main.go
-	GOOS=darwin GOARCH=amd64\
-      go build -a -ldflags="-X main.Version=$(VERSION)" -o build/cli
+windows:
+	GOOS=windows GOARCH=amd64 go build -a -ldflags="-X main.Version=$(VERSION)" -o build/windows/cli.exe
+
+macos:
+	GOOS=darwin GOARCH=amd64 go build -a -ldflags="-X main.Version=$(VERSION)" -o build/macos/cli
+
+linux:
+	GOOS=linux GOARCH=amd64 go build -a -ldflags="-X main.Version=$(VERSION)" -o build/linux/cli
+
+clean:
+	go clean
+	rm -rf build/
+
