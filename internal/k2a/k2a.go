@@ -61,7 +61,6 @@ func ExportAsyncApi(config K2AConfig) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// os.WriteFile(config.File, yaml, 0644)
 	return yaml, nil
 }
 
