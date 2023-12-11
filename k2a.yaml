@@ -41,6 +41,29 @@ channels:
         partitions: 1
         replicas: 1
         topicConfiguration: {}
+  test-rep:
+    subscribe:
+      operationId: TestRepSubscribe
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          groupId:
+            type: string
+          clientId:
+            type: string
+      message:
+        $ref: '#/components/messages/TestRepMessage'
+    bindings:
+      kafka:
+        bindingVersion: 0.4.0
+        partitions: 5
+        replicas: 1
+        topicConfiguration:
+          retention.ms: 1.2345e+07
+          delete.retention.ms: 3.6e+06
+          max.message.bytes: 64000
+        x-configs:
+          flush.messages: "1"
   test-topic:
     subscribe:
       operationId: TestTopicSubscribe
@@ -74,6 +97,25 @@ components:
             type: string
         type: object
       name: DemoMessage
+      bindings:
+        kafka:
+          bindingVersion: 0.3.0
+          key:
+            type: string
+    TestRepMessage:
+      schemaFormat: application/vnd.apache.avro;version=1.9.0
+      contentType: application/avro
+      messageId: TestRepMessage
+      payload:
+        fields:
+        - name: name
+          type: string
+        - default: 20000
+          name: money
+          type: int
+        name: account
+        type: record
+      name: TestRepMessage
       bindings:
         kafka:
           bindingVersion: 0.3.0

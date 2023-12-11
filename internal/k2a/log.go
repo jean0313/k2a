@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const LOG_FILE = "a2k.log"
+const LOG_FILE = "k2a.log"
 
 func InitLog() {
 	config := zap.NewProductionEncoderConfig()

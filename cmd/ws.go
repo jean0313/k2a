@@ -57,9 +57,9 @@ func export(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error: %v\n", err), http.StatusBadRequest)
 		return
 	}
-	defaultValue(&c)
-	zap.L().Info("config", zap.Any("config", c))
+	c.WithDefaults()
 
+	zap.L().Info("config", zap.Any("config", c))
 	if c.Topics == "" {
 		http.Error(w, "error: topics should not be empty", http.StatusBadRequest)
 		return
@@ -71,18 +71,4 @@ func export(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	io.WriteString(w, string(yaml))
-}
-
-func defaultValue(config *k2a.K2AConfig) {
-	if config.KafkaUrl == "" {
-		config.KafkaUrl = KAFKA_URL
-	}
-
-	if config.SchemaRegistryUrl == "" {
-		config.SchemaRegistryUrl = SCHEMA_REGISTRY_URL
-	}
-
-	if config.SpecVersion == "" {
-		config.SpecVersion = "1.0.0"
-	}
 }
