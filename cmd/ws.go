@@ -81,4 +81,8 @@ func defaultValue(config *k2a.K2AConfig) {
 	if config.SchemaRegistryUrl == "" {
 		config.SchemaRegistryUrl = SCHEMA_REGISTRY_URL
 	}
+
+	if config.SpecVersion == "" {
+		config.SpecVersion = "1.0.0"
+	}
 }
