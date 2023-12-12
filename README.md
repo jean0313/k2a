@@ -28,7 +28,7 @@ Server {
 };
 ```
 
-```bash
+```shell
 export KAFKA_OPTS="-Djava.security.auth.login.config=config/zk_jaas.conf"
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
@@ -70,7 +70,7 @@ bin/kafka-server-start.sh config/server.properties
 
 #### Schema Registry Auth
 etc/schema-registry/schema-registry.properties
-```
+```properties
 listeners=http://0.0.0.0:8081
 kafkastore.security.protocol=SASL_PLAINTEXT
 kafkastore.sasl.mechanism=PLAIN
@@ -87,13 +87,13 @@ KafkaClient {
 };
 ```
 
-```bash
+```shell
 export SCHEMA_REGISTRY_OPTS="-Djava.security.auth.login.config=etc/schema-registry/sr_jaas.conf"
 bin/schema-registry-start etc/schema-registry/schema-registry.properties
 ```
 
 ### Init
-```bash
+```shell
 # kafka broker: localhost:9092
 # init kafka test topic
 bin/kafka-topics.sh --bootstrap-server localhost:9092 \
@@ -177,6 +177,16 @@ Start web server to export topics
 
 Usage:
   cli ws [flags]
+
+Examples:
+
+# no auth, local kafka, local schema registry
+cli ws
+# for SASL_PLAINTEXT
+cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --username admin-secret
+# SASL_SSL
+...
+
 
 Flags:
   -h, --help                  help for ws

@@ -36,6 +36,14 @@ var wsCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 	},
+	Example: `
+# no auth, local kafka, local schema registry
+cli ws
+# for SASL_PLAINTEXT
+cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --username admin-secret
+# SASL_SSL
+...
+	`,
 }
 
 func init() {
