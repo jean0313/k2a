@@ -103,8 +103,15 @@ func (a *AccountDetails) QuerySubjectSchema() (Schema, error) {
 	return schema, nil
 }
 
-func (a *AccountDetails) queryTopicInfo(topics []string) ([]Topic, error) {
+func (a *AccountDetails) queryTopicInfo(conf *K2AConfig) ([]Topic, error) {
 	config := sarama.NewConfig()
+	if conf.UserName != "" && conf.Password != "" {
+		config.Net.SASL.Enable = true
+		config.Net.SASL.User = conf.UserName
+		config.Net.SASL.Password = conf.Password
+		config.Net.SASL.Handshake = true
+	}
+
 	brokers := []string{a.kafkaUrl}
 
 	admin, err := sarama.NewClusterAdmin(brokers, config)
@@ -117,8 +124,10 @@ func (a *AccountDetails) queryTopicInfo(topics []string) ([]Topic, error) {
 		return nil, err1
 	}
 
+	cfgTopics := conf.GetTopics()
+	fmt.Printf("admin topics: %v,  cfgTopics:%v\n", tps, cfgTopics)
 	ret := make([]Topic, 0)
-	for _, topic := range topics {
+	for _, topic := range cfgTopics {
 		value, ok := tps[topic]
 		if ok {
 			ret = append(ret, Topic{

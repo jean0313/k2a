@@ -16,22 +16,10 @@ type K2AConfig struct {
 	CAFile            string
 	TLSSkipVerify     bool
 	UseTLS            bool
+	UserName          string
+	Password          string
 }
 
 func (c *K2AConfig) GetTopics() []string {
 	return strings.Split(c.Topics, ",")
-}
-
-func (c *K2AConfig) WithDefaults() {
-	if c.KafkaUrl == "" {
-		c.KafkaUrl = DEFAULT_KAFKA_URL
-	}
-
-	if c.SchemaRegistryUrl == "" {
-		c.SchemaRegistryUrl = DEFAULT_SCHEMA_REGISTRY_URL
-	}
-
-	if c.SpecVersion == "" {
-		c.SpecVersion = "1.0.0"
-	}
 }

@@ -4,6 +4,94 @@
 - Kafka Cluster
 - SchemaRegistry Cluster
 
+### Security Config
+
+#### Zookeeper Auth
+config/zookeeper.properties
+```properties
+dataDir=/tmp/zookeeper
+clientPort=2181
+maxClientCnxns=0
+admin.enableServer=false
+authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+requireClientAuthScheme=sasl
+jaasLoginRenew=3600000
+```
+
+config/zk_jaas.conf
+```
+Server {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="admin"
+   password="admin-secret"
+   user_admin="admin-secret";
+};
+```
+
+```bash
+export KAFKA_OPTS="-Djava.security.auth.login.config=config/zk_jaas.conf"
+bin/zookeeper-server-start.sh config/zookeeper.properties
+```
+
+#### Kafka Auth
+server.properties
+```properties
+broker.id=0
+listeners=SASL_PLAINTEXT://:9092
+security.inter.broker.protocol=SASL_PLAINTEXT
+sasl.mechanism.inter.broker.protocol=PLAIN
+sasl.enabled.mechanisms=PLAIN
+authorizer.class.name=kafka.security.authorizer.AclAuthorizer
+allow.everyone.if.no.acl.found=true
+auto.create.topics.enable=false
+advertised.listeners=SASL_PLAINTEXT://localhost:9092
+```
+
+config/kafka_server_jaas.conf
+```
+KafkaServer {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="admin"
+   password="admin-secret"
+   user_admin="admin-secret";
+};
+
+Client {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="admin"
+   password="admin-secret";
+};
+```
+
+```bash
+export KAFKA_OPTS="-Djava.security.auth.login.config=config/kafka_server_jaas.conf"
+bin/kafka-server-start.sh config/server.properties
+```
+
+#### Schema Registry Auth
+etc/schema-registry/schema-registry.properties
+```
+listeners=http://0.0.0.0:8081
+kafkastore.security.protocol=SASL_PLAINTEXT
+kafkastore.sasl.mechanism=PLAIN
+kafkastore.bootstrap.servers=SASL_PLAINTEXT://localhost:9092
+```
+
+etc/schema-registry/sr_jaas.conf
+```
+KafkaClient {
+   org.apache.kafka.common.security.plain.PlainLoginModule required
+   username="admin"
+   password="admin-secret"
+   user_admin="admin-secret";
+};
+```
+
+```bash
+export SCHEMA_REGISTRY_OPTS="-Djava.security.auth.login.config=etc/schema-registry/sr_jaas.conf"
+bin/schema-registry-start etc/schema-registry/schema-registry.properties
+```
+
 ### Init
 ```bash
 # kafka broker: localhost:9092
@@ -52,7 +140,14 @@ Usage:
   cli k2a [flags]
 
 Examples:
-cli k2a --kurl prod.kafka.com:9092 --rurl http://prod.schema-registry.com --topics demo,sample
+
+# no auth
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
+# for SASL_PLAINTEXT
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --username admin-secret
+# SASL_SSL
+...
+
 
 Flags:
       --ca-file string        The optional certificate authority file for TLS client authentication
@@ -61,12 +156,13 @@ Flags:
   -h, --help                  help for k2a
       --key-file string       The optional key file for client authentication
       --kurl string           Kafka cluster broker url (default "localhost:9092")
+      --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
-      --spec-version string   Version number of the output file. (default 1.0.0)
+      --spec-version string   Version number of the output file. (default "1.0.0")
       --tls-skip-verify       Whether to skip TLS server cert verification (default true)
       --topics string         Topics to export
       --use-tls               Use TLS to communicate with the kafka cluster
-
+      --username string       username for kafka sasl_plaintext auth
 ```
 
 ### cli generate example

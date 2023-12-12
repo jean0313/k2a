@@ -21,11 +21,19 @@ var k2aCmd = &cobra.Command{
 		zap.L().Info("cli config", zap.Any("config", config))
 		yaml, err := k2a.ExportAsyncApi(config)
 		if err != nil {
-			panic(err)
+			zap.L().Warn("run error", zap.String("export error", err.Error()))
+			return
 		}
 		os.WriteFile(config.File, yaml, 0644)
 	},
-	Example: `cli k2a --kurl prod.kafka.com:9092 --rurl http://prod.schema-registry.com --topics demo,sample`,
+	Example: `
+# no auth
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
+# for SASL_PLAINTEXT
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --username admin-secret
+# SASL_SSL
+...
+	`,
 }
 
 func init() {
@@ -39,6 +47,8 @@ func init() {
 	k2aCmd.Flags().StringVar(&config.Certificate, "cert", "", "The optional certificate file for client authentication")
 	k2aCmd.Flags().StringVar(&config.KeyFile, "key-file", "", "The optional key file for client authentication")
 	k2aCmd.Flags().StringVar(&config.CAFile, "ca-file", "", "The optional certificate authority file for TLS client authentication")
+	k2aCmd.Flags().StringVar(&config.UserName, "username", "", "username for kafka sasl_plaintext auth")
+	k2aCmd.Flags().StringVar(&config.Password, "password", "", "password for kafka sasl_plaintext auth")
 	k2aCmd.Flags().BoolVar(&config.TLSSkipVerify, "tls-skip-verify", true, "Whether to skip TLS server cert verification")
 	k2aCmd.Flags().BoolVar(&config.UseTLS, "use-tls", false, "Use TLS to communicate with the kafka cluster")
 }

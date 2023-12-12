@@ -40,8 +40,12 @@ var wsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(wsCmd)
-
 	wsCmd.Flags().StringVar(&port, "port", "8080", "server port to listen")
+	wsCmd.Flags().StringVar(&config.SpecVersion, "spec-version", "1.0.0", "Version number of the output file.")
+	wsCmd.Flags().StringVar(&config.KafkaUrl, "kurl", k2a.DEFAULT_KAFKA_URL, "Kafka cluster broker url")
+	wsCmd.Flags().StringVar(&config.SchemaRegistryUrl, "rurl", k2a.DEFAULT_SCHEMA_REGISTRY_URL, "Schema registry url")
+	wsCmd.Flags().StringVar(&config.UserName, "username", "", "username for kafka sasl_plaintext auth")
+	wsCmd.Flags().StringVar(&config.Password, "password", "", "password for kafka sasl_plaintext auth")
 }
 
 func export(w http.ResponseWriter, r *http.Request) {
@@ -51,21 +55,19 @@ func export(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c k2a.K2AConfig
-	err = json.Unmarshal(body, &c)
+	err = json.Unmarshal(body, &config)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error: %v\n", err), http.StatusBadRequest)
 		return
 	}
-	c.WithDefaults()
 
-	zap.L().Info("config", zap.Any("config", c))
-	if c.Topics == "" {
+	zap.L().Info("config", zap.Any("config", config))
+	if config.Topics == "" {
 		http.Error(w, "error: topics should not be empty", http.StatusBadRequest)
 		return
 	}
 
-	yaml, err := k2a.ExportAsyncApi(c)
+	yaml, err := k2a.ExportAsyncApi(config)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error: %v\n", err.Error()), http.StatusInternalServerError)
 		return

@@ -249,7 +249,7 @@ func createAccountDetails(config K2AConfig) *AccountDetails {
 func GetAccountDetails(config K2AConfig) (*AccountDetails, error) {
 	details := createAccountDetails(config)
 
-	topics, err := details.queryTopicInfo(config.GetTopics())
+	topics, err := details.queryTopicInfo(&config)
 	if err != nil {
 		return nil, err
 	}
