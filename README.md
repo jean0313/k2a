@@ -173,14 +173,19 @@ cli k2a --topics test-topic
 
 ### cli ws help
 ```
-Start web server to export topics, browser to localhost:8080
+Start web server to export topics
 
 Usage:
   cli ws [flags]
 
 Flags:
-  -h, --help          help for ws
-      --port string   server port to listen (default "8080")
+  -h, --help                  help for ws
+      --kurl string           Kafka cluster broker url (default "localhost:9092")
+      --password string       password for kafka sasl_plaintext auth
+      --port string           server port to listen (default "8080")
+      --rurl string           Schema registry url (default "http://localhost:8081")
+      --spec-version string   Version number of the output file. (default "1.0.0")
+      --username string       username for kafka sasl_plaintext auth
 ```
 
 ![ws](docs/ws.jpg)

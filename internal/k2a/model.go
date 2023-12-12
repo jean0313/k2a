@@ -125,7 +125,6 @@ func (a *AccountDetails) queryTopicInfo(conf *K2AConfig) ([]Topic, error) {
 	}
 
 	cfgTopics := conf.GetTopics()
-	fmt.Printf("admin topics: %v,  cfgTopics:%v\n", tps, cfgTopics)
 	ret := make([]Topic, 0)
 	for _, topic := range cfgTopics {
 		value, ok := tps[topic]

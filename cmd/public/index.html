@@ -58,8 +58,8 @@
                 fetch('/export', options)
                     .then(response => response.text())
                     .then(response => {
-                        if (!response.ok) {
-                            this.$message.error(response);
+                        if (response.startsWith('error')) {
+                            this.$message.error(new Error(response))
                             return
                         }
                         this.form.yaml = response;
