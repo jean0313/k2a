@@ -7,7 +7,7 @@
 ### Security Config
 
 #### Zookeeper Auth
-config/zookeeper.properties
+**config/zookeeper.properties**
 ```properties
 dataDir=/tmp/zookeeper
 clientPort=2181
@@ -18,7 +18,7 @@ requireClientAuthScheme=sasl
 jaasLoginRenew=3600000
 ```
 
-config/zk_jaas.conf
+**config/zk_jaas.conf**
 ```
 Server {
    org.apache.kafka.common.security.plain.PlainLoginModule required
@@ -28,13 +28,14 @@ Server {
 };
 ```
 
+**run zk**
 ```shell
 export KAFKA_OPTS="-Djava.security.auth.login.config=config/zk_jaas.conf"
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 #### Kafka Auth
-server.properties
+**server.properties**
 ```properties
 broker.id=0
 listeners=SASL_PLAINTEXT://:9092
@@ -47,7 +48,7 @@ auto.create.topics.enable=false
 advertised.listeners=SASL_PLAINTEXT://localhost:9092
 ```
 
-config/kafka_server_jaas.conf
+**config/kafka_server_jaas.conf**
 ```
 KafkaServer {
    org.apache.kafka.common.security.plain.PlainLoginModule required
@@ -63,13 +64,14 @@ Client {
 };
 ```
 
+**run kafka**
 ```bash
 export KAFKA_OPTS="-Djava.security.auth.login.config=config/kafka_server_jaas.conf"
 bin/kafka-server-start.sh config/server.properties
 ```
 
 #### Schema Registry Auth
-etc/schema-registry/schema-registry.properties
+**etc/schema-registry/schema-registry.properties**
 ```properties
 listeners=http://0.0.0.0:8081
 kafkastore.security.protocol=SASL_PLAINTEXT
@@ -77,7 +79,7 @@ kafkastore.sasl.mechanism=PLAIN
 kafkastore.bootstrap.servers=SASL_PLAINTEXT://localhost:9092
 ```
 
-etc/schema-registry/sr_jaas.conf
+**etc/schema-registry/sr_jaas.conf**
 ```
 KafkaClient {
    org.apache.kafka.common.security.plain.PlainLoginModule required
@@ -87,12 +89,13 @@ KafkaClient {
 };
 ```
 
+**run registry**
 ```shell
 export SCHEMA_REGISTRY_OPTS="-Djava.security.auth.login.config=etc/schema-registry/sr_jaas.conf"
 bin/schema-registry-start etc/schema-registry/schema-registry.properties
 ```
 
-### Init
+### Init Data
 ```shell
 # kafka broker: localhost:9092
 # init kafka test topic
