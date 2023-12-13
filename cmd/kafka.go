@@ -18,6 +18,10 @@ var kafkaCmd = &cobra.Command{
 	Short: "command to query topics by topic name",
 	Long:  `command to query topics by topic name`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if query == "" {
+			zap.L().Warn("run error", zap.String("error", "query should not be empty!"))
+			return
+		}
 		topics, err := queryTopics(query)
 		if err != nil {
 			zap.L().Warn("run error", zap.String("export error", err.Error()))
