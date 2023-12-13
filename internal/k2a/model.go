@@ -82,6 +82,7 @@ type AccountDetails struct {
 	schemaRegistryUrl       string
 	subjects                []string
 	channelDetails          channelDetails
+	config                  *K2AConfig
 }
 
 func (a *AccountDetails) QuerySubjectSchema() (Schema, error) {
@@ -103,15 +104,35 @@ func (a *AccountDetails) QuerySubjectSchema() (Schema, error) {
 	return schema, nil
 }
 
-func (a *AccountDetails) queryTopicInfo(conf *K2AConfig) ([]Topic, error) {
-	config := sarama.NewConfig()
-	if conf.UserName != "" && conf.Password != "" {
-		config.Net.SASL.Enable = true
-		config.Net.SASL.User = conf.UserName
-		config.Net.SASL.Password = conf.Password
-		config.Net.SASL.Handshake = true
+func (a *AccountDetails) SearchTopics(query string) ([]string, error) {
+	topics, err := a.getAllTopics()
+	if err != nil {
+		return nil, err
 	}
 
+	var ret []string
+	limit := 2
+	for k, _ := range topics {
+		if strings.Contains(k, query) && len(ret) < limit {
+			ret = append(ret, k)
+		}
+	}
+	return ret, nil
+}
+
+func (a *AccountDetails) createConfig() *sarama.Config {
+	config := sarama.NewConfig()
+	if a.config.UserName != "" && a.config.Password != "" {
+		config.Net.SASL.Enable = true
+		config.Net.SASL.User = a.config.UserName
+		config.Net.SASL.Password = a.config.Password
+		config.Net.SASL.Handshake = true
+	}
+	return config
+}
+
+func (a *AccountDetails) getAllTopics() (map[string]sarama.TopicDetail, error) {
+	config := a.createConfig()
 	brokers := []string{a.kafkaUrl}
 
 	admin, err := sarama.NewClusterAdmin(brokers, config)
@@ -119,14 +140,17 @@ func (a *AccountDetails) queryTopicInfo(conf *K2AConfig) ([]Topic, error) {
 		return nil, err
 	}
 
-	tps, err1 := admin.ListTopics()
-	if err1 != nil {
-		return nil, err1
+	return admin.ListTopics()
+}
+
+func (a *AccountDetails) queryTopicInfo(topics []string) ([]Topic, error) {
+	tps, err := a.getAllTopics()
+	if err != nil {
+		return nil, err
 	}
 
-	cfgTopics := conf.GetTopics()
-	ret := make([]Topic, 0)
-	for _, topic := range cfgTopics {
+	ret := []Topic{}
+	for _, topic := range topics {
 		value, ok := tps[topic]
 		if ok {
 			ret = append(ret, Topic{

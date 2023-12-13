@@ -13,7 +13,7 @@ import (
 
 const protobufErrorMessage = "protobuf is not supported"
 
-func ExportAsyncApi(config K2AConfig) ([]byte, error) {
+func ExportAsyncApi(config *K2AConfig) ([]byte, error) {
 	details, err := GetAccountDetails(config)
 	if err != nil {
 		return nil, err
@@ -205,7 +205,7 @@ func processBindings(details *AccountDetails) error {
 	return nil
 }
 
-func createAsyncReflector(config K2AConfig) asyncapi.Reflector {
+func createAsyncReflector(config *K2AConfig) asyncapi.Reflector {
 	return asyncapi.Reflector{
 		Schema: &spec.AsyncAPI{
 			DefaultContentType: "application/json",
@@ -239,17 +239,18 @@ func createAsyncReflector(config K2AConfig) asyncapi.Reflector {
 	}
 }
 
-func createAccountDetails(config K2AConfig) *AccountDetails {
+func CreateAccountDetails(config *K2AConfig) *AccountDetails {
 	details := new(AccountDetails)
 	details.kafkaUrl = config.KafkaUrl
 	details.schemaRegistryUrl = config.SchemaRegistryUrl
+	details.config = config
 	return details
 }
 
-func GetAccountDetails(config K2AConfig) (*AccountDetails, error) {
-	details := createAccountDetails(config)
+func GetAccountDetails(config *K2AConfig) (*AccountDetails, error) {
+	details := CreateAccountDetails(config)
 
-	topics, err := details.queryTopicInfo(&config)
+	topics, err := details.queryTopicInfo(config.GetTopics())
 	if err != nil {
 		return nil, err
 	}

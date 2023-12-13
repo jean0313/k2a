@@ -19,7 +19,7 @@ var k2aCmd = &cobra.Command{
 	Long:  `Export an AsyncAPI specification for a Kafka cluster and Schema Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		zap.L().Info("cli config", zap.Any("config", config))
-		yaml, err := k2a.ExportAsyncApi(config)
+		yaml, err := k2a.ExportAsyncApi(&config)
 		if err != nil {
 			zap.L().Warn("run error", zap.String("export error", err.Error()))
 			return
@@ -27,6 +27,8 @@ var k2aCmd = &cobra.Command{
 		os.WriteFile(config.File, yaml, 0644)
 	},
 	Example: `
+# no auth, local kafka, local registry
+cli k2a --topics demo,sample
 # no auth
 cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
 # for SASL_PLAINTEXT
@@ -39,16 +41,12 @@ cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics de
 func init() {
 	rootCmd.AddCommand(k2aCmd)
 
-	k2aCmd.Flags().StringVar(&config.KafkaUrl, "kurl", k2a.DEFAULT_KAFKA_URL, "Kafka cluster broker url")
-	k2aCmd.Flags().StringVar(&config.SchemaRegistryUrl, "rurl", k2a.DEFAULT_SCHEMA_REGISTRY_URL, "Schema registry url")
 	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export")
 	k2aCmd.Flags().StringVar(&config.File, "file", "k2a.yaml", "Output file name")
-	k2aCmd.Flags().StringVar(&config.SpecVersion, "spec-version", "1.0.0", "Version number of the output file.")
+
 	k2aCmd.Flags().StringVar(&config.Certificate, "cert", "", "The optional certificate file for client authentication")
 	k2aCmd.Flags().StringVar(&config.KeyFile, "key-file", "", "The optional key file for client authentication")
 	k2aCmd.Flags().StringVar(&config.CAFile, "ca-file", "", "The optional certificate authority file for TLS client authentication")
-	k2aCmd.Flags().StringVar(&config.UserName, "username", "", "username for kafka sasl_plaintext auth")
-	k2aCmd.Flags().StringVar(&config.Password, "password", "", "password for kafka sasl_plaintext auth")
 	k2aCmd.Flags().BoolVar(&config.TLSSkipVerify, "tls-skip-verify", true, "Whether to skip TLS server cert verification")
 	k2aCmd.Flags().BoolVar(&config.UseTLS, "use-tls", false, "Use TLS to communicate with the kafka cluster")
 }
