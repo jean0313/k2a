@@ -144,6 +144,8 @@ Usage:
 
 Examples:
 
+# no auth, local kafka, local registry
+cli k2a --topics demo,sample
 # no auth
 cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
 # for SASL_PLAINTEXT
@@ -153,19 +155,22 @@ cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics de
 
 
 Flags:
-      --ca-file string        The optional certificate authority file for TLS client authentication
-      --cert string           The optional certificate file for client authentication
-      --file string           Output file name (default "k2a.yaml")
-  -h, --help                  help for k2a
-      --key-file string       The optional key file for client authentication
+      --ca-file string    The optional certificate authority file for TLS client authentication
+      --cert string       The optional certificate file for client authentication
+      --file string       Output file name (default "k2a.yaml")
+  -h, --help              help for k2a
+      --key-file string   The optional key file for client authentication
+      --tls-skip-verify   Whether to skip TLS server cert verification (default true)
+      --topics string     Topics to export
+      --use-tls           Use TLS to communicate with the kafka cluster
+
+Global Flags:
+  -d, --debug                 Display debugging output in the console. (default: false)
       --kurl string           Kafka cluster broker url (default "localhost:9092")
-      --password string       password for kafka sasl_plaintext auth
+  -p, --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
       --spec-version string   Version number of the output file. (default "1.0.0")
-      --tls-skip-verify       Whether to skip TLS server cert verification (default true)
-      --topics string         Topics to export
-      --use-tls               Use TLS to communicate with the kafka cluster
-      --username string       username for kafka sasl_plaintext auth
+  -u, --username string       username for kafka sasl_plaintext auth
 ```
 
 ### cli generate example
@@ -192,16 +197,51 @@ cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username a
 
 
 Flags:
-  -h, --help                  help for ws
+  -h, --help          help for ws
+      --port string   server port to listen (default "8080")
+
+Global Flags:
+  -d, --debug                 Display debugging output in the console. (default: false)
       --kurl string           Kafka cluster broker url (default "localhost:9092")
-      --password string       password for kafka sasl_plaintext auth
-      --port string           server port to listen (default "8080")
+  -p, --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
       --spec-version string   Version number of the output file. (default "1.0.0")
-      --username string       username for kafka sasl_plaintext auth
+  -u, --username string       username for kafka sasl_plaintext auth
 ```
 
 ![ws](docs/ws.jpg)
+
+
+### cli kafka help
+```
+command to query topics by topic name
+
+Usage:
+  cli kafka [flags]
+
+Examples:
+
+# no auth, local kafka, local registry
+cli kafka --query test
+# no auth
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test
+# for SASL_PLAINTEXT
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --username admin-secret
+# SASL_SSL
+...
+
+Flags:
+  -h, --help           help for kafka
+      --query string   keyword in topic name
+
+Global Flags:
+  -d, --debug                 Display debugging output in the console. (default: false)
+      --kurl string           Kafka cluster broker url (default "localhost:9092")
+  -p, --password string       password for kafka sasl_plaintext auth
+      --rurl string           Schema registry url (default "http://localhost:8081")
+      --spec-version string   Version number of the output file. (default "1.0.0")
+  -u, --username string       username for kafka sasl_plaintext auth
+```
 
 
 ## Verify

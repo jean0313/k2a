@@ -15,8 +15,8 @@ var query string
 
 var kafkaCmd = &cobra.Command{
 	Use:   "kafka",
-	Short: "kafka command",
-	Long:  `kafka command`,
+	Short: "command to query topics by topic name",
+	Long:  `command to query topics by topic name`,
 	Run: func(cmd *cobra.Command, args []string) {
 		topics, err := queryTopics(query)
 		if err != nil {
@@ -27,6 +27,15 @@ var kafkaCmd = &cobra.Command{
 			fmt.Println(v)
 		}
 	},
+	Example: `
+# no auth, local kafka, local registry
+cli kafka --query test
+# no auth
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test
+# for SASL_PLAINTEXT
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --username admin-secret
+# SASL_SSL
+...`,
 }
 
 func queryTopics(query string) ([]string, error) {
