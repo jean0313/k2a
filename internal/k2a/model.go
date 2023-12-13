@@ -111,7 +111,7 @@ func (a *AccountDetails) SearchTopics(query string) ([]string, error) {
 	}
 
 	var ret []string
-	limit := 2
+	limit := 20
 	for k, _ := range topics {
 		if strings.Contains(k, query) && len(ret) < limit {
 			ret = append(ret, k)
