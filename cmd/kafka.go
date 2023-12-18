@@ -37,7 +37,7 @@ cli kafka --query test
 # no auth
 cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test
 # for SASL_PLAINTEXT
-cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --username admin-secret
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --password admin-secret
 # SASL_SSL
 ...`,
 }

@@ -57,11 +57,12 @@ func ExportAsyncApi(config *K2AConfig) ([]byte, error) {
 	}
 
 	addComponents(reflector, messages)
-	yaml, err := reflector.Schema.MarshalYAML()
-	if err != nil {
-		return nil, err
+
+	if config.FileFormat == DEFAULT_FILE_FORMAT_YAML {
+		return reflector.Schema.MarshalYAML()
+	} else {
+		return reflector.Schema.MarshalJSON()
 	}
-	return yaml, nil
 }
 
 func addComponents(reflector asyncapi.Reflector, messages map[string]spec.Message) asyncapi.Reflector {

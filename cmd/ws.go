@@ -40,7 +40,7 @@ var wsCmd = &cobra.Command{
 # no auth, local kafka, local schema registry
 cli ws
 # for SASL_PLAINTEXT
-cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --username admin-secret
+cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --password admin-secret
 # SASL_SSL
 ...
 	`,

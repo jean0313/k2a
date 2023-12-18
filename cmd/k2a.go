@@ -32,7 +32,7 @@ cli k2a --topics demo,sample
 # no auth
 cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
 # for SASL_PLAINTEXT
-cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --username admin-secret
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --password admin-secret
 # SASL_SSL
 ...
 	`,
@@ -49,4 +49,5 @@ func init() {
 	k2aCmd.Flags().StringVar(&config.CAFile, "ca-file", "", "The optional certificate authority file for TLS client authentication")
 	k2aCmd.Flags().BoolVar(&config.TLSSkipVerify, "tls-skip-verify", true, "Whether to skip TLS server cert verification")
 	k2aCmd.Flags().BoolVar(&config.UseTLS, "use-tls", false, "Use TLS to communicate with the kafka cluster")
+	k2aCmd.Flags().StringVar(&config.FileFormat, "file-format", k2a.DEFAULT_FILE_FORMAT_YAML, "Output file format")
 }
