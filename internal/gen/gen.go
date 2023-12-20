@@ -170,7 +170,7 @@ func (p *Project) createFiles() {
 	var err error
 	for i := 0; i < len(p.ctxes); i++ {
 		v := p.ctxes[i]
-		fmt.Printf("ctx: %+v\n", v)
+		zap.L().Info("generate file for context", zap.Any("contex", v))
 
 		if v.OperationName == "publish" {
 			if err = p.createFile(&v, "ProducerConfig.tmpl", "config", func(ctx *GenContex) string {
@@ -375,14 +375,12 @@ func parseContexts(apiFile string) []GenContex {
 		ctxs = append(ctxs, ctx)
 	}
 
-	// debug(api)
-
 	for _, v := range ctxs {
-		fmt.Printf("%+v\n", v)
+		zap.L().Debug("context", zap.Any("ctx", v))
 	}
 
 	for k, v := range msgNameToSchemaNameMap {
-		fmt.Printf("message: %v -> schema: %v\n", k, v)
+		zap.L().Debug("message to schema mapping", zap.String(k, v))
 	}
 
 	return ctxs
@@ -425,36 +423,31 @@ func extractSchemaName(messageEntity *MessageEntity) string {
 }
 
 func debug(api AsyncAPIModel) {
-	fmt.Println("----------- Channels ------------")
+	zap.L().Debug("----------- Channels ------------")
 	for k, v := range api.Channels {
-		fmt.Printf("channel: %v\n", k)
-		fmt.Printf("	detail: %v\n", v)
+		zap.L().Debug("channel", zap.Any(k, v))
 		if v.Publish != nil {
-			fmt.Printf("		message ref: %+v\n", v.Publish.Message.Reference)
-			fmt.Printf("		message payload: %+v\n", v.Publish.Message.MessageEntity)
+			zap.L().Debug("		channel message ref", zap.Any("ref", v.Publish.Message.Reference))
+			zap.L().Debug("		channel message payload", zap.Any("payload", v.Publish.Message.MessageEntity))
 		}
 
 		if v.Subscribe != nil {
-			fmt.Printf("		message ref: %+v\n", v.Subscribe.Message.Reference)
-			fmt.Printf("		message payload: %+v\n", v.Subscribe.Message.MessageEntity)
+			zap.L().Debug("		channel message ref", zap.Any("ref", v.Subscribe.Message.Reference))
+			zap.L().Debug("		channel message payload", zap.Any("payload", v.Subscribe.Message.MessageEntity))
 		}
 	}
-	fmt.Println()
 
-	fmt.Println("----------- Components.Messages ------------")
+	zap.L().Debug("----------- Components.Messages ------------")
 	for k, v := range api.Components.Messages {
-		fmt.Printf("message: %+v\n", k)
-		fmt.Printf("		Ref: %+v\n", v.Reference)
+		zap.L().Debug("component message", zap.Any(k, v))
 		if v.MessageEntity != nil {
-			fmt.Printf("		Payload: %+v\n", v.MessageEntity.Payload)
+			zap.L().Debug("		compnent message payload", zap.Any("payload", v.MessageEntity.Payload))
 		}
 	}
-	fmt.Println()
 
-	fmt.Println("----------- Components.Schemas ------------")
+	zap.L().Debug("----------- Components.Schemas ------------")
 	for k, v := range api.Components.Schemas {
-		fmt.Printf("schema: %+v\n", k)
-		fmt.Printf("		%+v\n", v)
+		zap.L().Debug("schema", zap.Any(k, v))
 	}
 }
 
