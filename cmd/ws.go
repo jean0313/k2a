@@ -65,7 +65,7 @@ func export(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	zap.L().Info("config", zap.Any("config", config))
+	zap.L().Info("config", zap.Any("config", maskPassword(config)))
 	if config.Topics == "" {
 		http.Error(w, "error: topics should not be empty", http.StatusBadRequest)
 		return

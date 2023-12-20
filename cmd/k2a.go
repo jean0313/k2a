@@ -18,7 +18,7 @@ var k2aCmd = &cobra.Command{
 	Short: "Export an AsyncAPI specification",
 	Long:  `Export an AsyncAPI specification for a Kafka cluster and Schema Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		zap.L().Info("cli config", zap.Any("config", config))
+		zap.L().Info("cli config", zap.Any("config", maskPassword(config)))
 		yaml, err := k2a.ExportAsyncApi(&config)
 		if err != nil {
 			zap.L().Warn("run error", zap.String("export error", err.Error()))
@@ -36,6 +36,11 @@ cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics de
 # SASL_SSL
 ...
 	`,
+}
+
+func maskPassword(conf k2a.K2AConfig) k2a.K2AConfig {
+	conf.Password = "******"
+	return conf
 }
 
 func init() {
