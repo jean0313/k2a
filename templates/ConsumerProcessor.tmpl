@@ -1,0 +1,8 @@
+package {{ .GCtx.Group }}.{{ .GCtx.PackageName }}.processing;
+
+import {{ .GCtx.Group }}.{{ .GCtx.PackageName }}.model.{{ .SchemaName }};
+import com.ai.tx.core.model.ConsumerEventProcessor;
+
+public interface {{ .ChannelName | capitalize }}ConsumerProcessor extends extends ConsumerEventProcessor<String, {{ .SchemaName }}> {
+
+}

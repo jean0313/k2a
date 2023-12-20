@@ -1,0 +1,18 @@
+package {{ .GCtx.Group }}.{{ .GCtx.PackageName }}.validator;
+
+import com.ai.tx.core.request.EventRequest;
+import com.ai.tx.core.validator.ValidationMetaData;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component("{{ .ChannelName | capitalize }}ConsumerValidator")
+public class {{ .ChannelName | capitalize }}ConsumerValidator extends CommonConsumerValidator<EventRequest> {
+
+    @Override
+    protected List<ValidationMetaData> prepareValidationMetaData() {
+        List<ValidationMetaData> validationMetaData = new ArrayList<>();
+        return validationMetaData;
+    }
+}

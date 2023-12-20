@@ -1,0 +1,17 @@
+package {{ .GCtx.Group }}.{{ .GCtx.PackageName }}.service;
+
+import com.ai.tx.core.annotation.ProducerHandler;
+import org.springframework.messaging.Message;
+import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+
+@Service
+public class PublisherServiceImpl implements PublisherService {
+
+    @ProducerHandler(config = "{{ .ChannelName | capitalize }}ProducerConfig",
+            validator = "{{ .ChannelName | capitalize }}ProducerValidator",
+            response = "{{ .ChannelName | capitalize }}ProducerResponse")
+    public ListenableFuture<?> returnTransactionStatus(Message<?> message) {
+        return null;
+    }
+}
