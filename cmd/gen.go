@@ -5,8 +5,10 @@ package cmd
 
 import (
 	"k2a/internal/gen"
+	"k2a/internal/k2a"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var (
@@ -19,6 +21,9 @@ var genCmd = &cobra.Command{
 	Short: "generate code",
 	Long:  `generate code for asyncapi spec`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if Debug {
+			k2a.LOG_LEVEL.SetLevel(zap.DebugLevel)
+		}
 		gen.Gen(&gCtx)
 	},
 	Example: `cli gen --asyncapi-file k2a.yaml --dest-dir output`,

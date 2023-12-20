@@ -375,6 +375,9 @@ func parseContexts(apiFile string) []GenContex {
 		ctxs = append(ctxs, ctx)
 	}
 
+	// only for debug
+	debug(api)
+
 	for _, v := range ctxs {
 		zap.L().Debug("context", zap.Any("ctx", v))
 	}
