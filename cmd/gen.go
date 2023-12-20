@@ -21,6 +21,7 @@ var genCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		gen.Gen(&gCtx)
 	},
+	Example: `cli gen --asyncapi-file k2a.yaml --dest-dir output`,
 }
 
 func init() {

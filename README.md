@@ -243,6 +243,79 @@ Global Flags:
   -u, --username string       username for kafka sasl_plaintext auth
 ```
 
+### cli gen help
+```
+generate code for asyncapi spec
+
+Usage:
+  cli gen [flags]
+
+Examples:
+cli gen --asyncapi-file k2a.yaml --dest-dir output
+
+Flags:
+      --artifact string          artifact id for maven project (default "sample-app")
+      --asyncapi-file string     asyncapi spec file for generation
+      --description string       a description for maven project (default "this is a sample app")
+      --dest-dir string          output dir for generation (default "output")
+      --group string             group id for maven project (default "com.sample")
+  -h, --help                     help for gen
+      --package-name string      package name for maven project (default "sample")
+      --release-version string   parent project version for maven project (default "1.0.0")
+
+Global Flags:
+  -d, --debug                 Display debugging output in the console. (default: false)
+      --kurl string           Kafka cluster broker url (default "localhost:9092")
+  -p, --password string       password for kafka sasl_plaintext auth
+      --rurl string           Schema registry url (default "http://localhost:8081")
+      --spec-version string   Version number of the output file. (default "1.0.0")
+  -u, --username string       username for kafka sasl_plaintext auth
+```
+
+#### gen result
+```
+output
+└── sample-app
+    ├── pom.xml
+    └── src
+        ├── main
+        │   ├── java
+        │   │   └── com
+        │   │       └── sample
+        │   │           ├── Application.java
+        │   │           ├── config
+        │   │           │   ├── DemoConsumerConfig.java
+        │   │           │   ├── DemoConsumerProcessor.java
+        │   │           │   ├── Test-repConsumerConfig.java
+        │   │           │   ├── Test-repConsumerProcessor.java
+        │   │           │   ├── Test-topicConsumerConfig.java
+        │   │           │   └── Test-topicConsumerProcessor.java
+        │   │           ├── dao
+        │   │           ├── data
+        │   │           │   └── mapper
+        │   │           ├── domain
+        │   │           ├── integration
+        │   │           ├── model
+        │   │           ├── processing
+        │   │           │   ├── DemoConsumerProcessor.java
+        │   │           │   ├── Test-repConsumerProcessor.java
+        │   │           │   └── Test-topicConsumerProcessor.java
+        │   │           ├── response
+        │   │           ├── service
+        │   │           │   ├── DemoConsumerService.java
+        │   │           │   ├── Test-repConsumerService.java
+        │   │           │   └── Test-topicConsumerService.java
+        │   │           └── validator
+        │   │               ├── CommonConsumerValidator.java
+        │   │               ├── CommonProducerValidator.java
+        │   │               ├── DemoConsumerValidator.java
+        │   │               ├── Test-repConsumerValidator.java
+        │   │               └── Test-topicConsumerValidator.java
+        │   └── resources
+        │       ├── api
+        │       └── avro
+        └── test
+```
 
 ## Verify
 [![Studio](docs/studio.jpg)](https://studio.asyncapi.com/)
