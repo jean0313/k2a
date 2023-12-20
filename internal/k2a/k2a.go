@@ -42,7 +42,7 @@ func ExportAsyncApi(config *K2AConfig) ([]byte, error) {
 			}
 
 			channelCount++
-			messages[msgName(topic.GetTopicName())] = spec.Message{
+			messages[*details.channelDetails.schema.Name] = spec.Message{
 				OneOf1: &spec.MessageOneOf1{MessageEntity: details.buildMessageEntity()},
 			}
 			reflector, err = addChannel(reflector, details.channelDetails)
@@ -116,7 +116,7 @@ func addChannel(reflector asyncapi.Reflector, details channelDetails) (asyncapi.
 		channel.BaseChannelItem.MapOfAnything = details.mapOfMessageCompat
 	}
 	if details.unmarshalledSchema != nil {
-		channel.BaseChannelItem.Subscribe.Message = &spec.Message{Reference: &spec.Reference{Ref: "#/components/messages/" + msgName(details.currentTopic.GetTopicName())}}
+		channel.BaseChannelItem.Subscribe.Message = &spec.Message{Reference: &spec.Reference{Ref: "#/components/messages/" + *details.schema.Name}}
 	}
 	if details.bindings != nil {
 		if details.bindings.operationBinding.Kafka != nil {

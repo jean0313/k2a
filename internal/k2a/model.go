@@ -33,6 +33,7 @@ type Schema struct {
 	Id         *int32  `json:"id,omitempty"`
 	SchemaType *string `json:"schemaType,omitempty"`
 	Schema     *string `json:"schema,omitempty"`
+	Name       *string `json:"name,omitempty`
 }
 
 func (s *Schema) GetSchemaType() string {
@@ -49,15 +50,6 @@ func (s *Schema) GetSchema() string {
 		return ret
 	}
 	return *s.Schema
-}
-
-type ChannelDetails struct {
-	topicName          string
-	topicDescription   string
-	subject            string
-	contentType        string
-	unmarshalledSchema map[string]any
-	schema             *Schema
 }
 
 type topicConfigurationExport struct {
@@ -188,14 +180,14 @@ func (a *AccountDetails) buildMessageEntity() *spec.MessageEntity {
 	}
 	entityProducer.WithTags(a.channelDetails.schemaLevelTags...)
 	// Name
-	entityProducer.WithName(msgName(a.channelDetails.currentTopic.GetTopicName()))
+	entityProducer.WithName(*a.channelDetails.schema.Name)
 	if a.channelDetails.bindings != nil {
 		entityProducer.WithBindings(a.channelDetails.bindings.messageBinding)
 	}
 	if a.channelDetails.unmarshalledSchema != nil {
 		entityProducer.WithPayload(a.channelDetails.unmarshalledSchema)
 	}
-	entityProducer.MessageID = msgName(a.channelDetails.currentTopic.GetTopicName())
+	entityProducer.MessageID = *a.channelDetails.schema.Name
 	return entityProducer
 }
 
@@ -224,7 +216,20 @@ func (a *AccountDetails) getSchemaDetails() error {
 	if err := json.Unmarshal([]byte(*schema.Schema), &a.channelDetails.unmarshalledSchema); err != nil {
 		a.channelDetails.unmarshalledSchema, err = handlePrimitiveSchemas(schema.GetSchema(), err)
 	}
+
+	setSchemaName(&a.channelDetails)
 	return nil
+}
+
+func setSchemaName(channelDetails *channelDetails) {
+	messageName, ok := channelDetails.unmarshalledSchema["name"]
+	var msg string
+	if ok {
+		msg = fmt.Sprintf("%v", messageName)
+	} else {
+		msg = msgName(channelDetails.currentTopic.TopicName)
+	}
+	channelDetails.schema.Name = &msg
 }
 
 func handlePrimitiveSchemas(schema string, err error) (map[string]any, error) {
