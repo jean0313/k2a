@@ -1,9 +1,12 @@
 package k2a
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/IBM/sarama"
@@ -120,7 +123,38 @@ func (a *AccountDetails) createConfig() *sarama.Config {
 		config.Net.SASL.Password = a.config.Password
 		config.Net.SASL.Handshake = true
 	}
+	config.Net.TLS.Enable = a.config.UseTLS
+
+	tlsConfig, err := NewTLSConfig(a.config.CAFile, a.config.KeyFile, a.config.Certificate)
+	if err != nil {
+		panic(err)
+	}
+	config.Net.TLS.Config = tlsConfig
 	return config
+}
+
+func NewTLSConfig(clientCertFile, clientKeyFile, caCertFile string) (*tls.Config, error) {
+	tlsConfig := tls.Config{
+		InsecureSkipVerify: true,
+	}
+
+	cert, err := tls.LoadX509KeyPair(clientCertFile, clientKeyFile)
+	if err != nil {
+		return &tlsConfig, err
+	}
+	tlsConfig.Certificates = []tls.Certificate{cert}
+
+	// Load CA cert
+	caCert, err := os.ReadFile(caCertFile)
+	if err != nil {
+		return &tlsConfig, err
+	}
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+	tlsConfig.RootCAs = caCertPool
+
+	// tlsConfig.BuildNameToCertificate()
+	return &tlsConfig, err
 }
 
 func (a *AccountDetails) getAllTopics() (map[string]sarama.TopicDetail, error) {

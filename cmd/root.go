@@ -44,4 +44,19 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&config.Password, "spec-version", "1.0.0", "Version number of the output file.")
 	viper.BindPFlag("spec-version", rootCmd.PersistentFlags().Lookup("spec-version"))
+
+	rootCmd.PersistentFlags().StringVar(&config.Certificate, "cert", "", "The optional certificate file for client authentication")
+	viper.BindPFlag("cert", rootCmd.PersistentFlags().Lookup("cert"))
+
+	rootCmd.PersistentFlags().StringVar(&config.KeyFile, "key-file", "", "The optional key file for client authentication")
+	viper.BindPFlag("key-file", rootCmd.PersistentFlags().Lookup("key-file"))
+
+	rootCmd.PersistentFlags().StringVar(&config.CAFile, "ca-file", "", "The optional certificate authority file for TLS client authentication")
+	viper.BindPFlag("ca-file", rootCmd.PersistentFlags().Lookup("ca-file"))
+
+	rootCmd.PersistentFlags().BoolVar(&config.TLSSkipVerify, "tls-skip-verify", true, "Whether to skip TLS server cert verification")
+	viper.BindPFlag("tls-skip-verify", rootCmd.PersistentFlags().Lookup("tls-skip-verify"))
+
+	rootCmd.PersistentFlags().BoolVar(&config.UseTLS, "use-tls", false, "Use TLS to communicate with the kafka cluster")
+	viper.BindPFlag("use-tls", rootCmd.PersistentFlags().Lookup("use-tls"))
 }
