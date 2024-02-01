@@ -149,27 +149,28 @@ cli k2a --topics demo,sample
 # no auth
 cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
 # for SASL_PLAINTEXT
-cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --username admin-secret
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --password admin-secret
 # SASL_SSL
 ...
 
 
 Flags:
-      --ca-file string    The optional certificate authority file for TLS client authentication
-      --cert string       The optional certificate file for client authentication
-      --file string       Output file name (default "k2a.yaml")
-  -h, --help              help for k2a
-      --key-file string   The optional key file for client authentication
-      --tls-skip-verify   Whether to skip TLS server cert verification (default true)
-      --topics string     Topics to export
-      --use-tls           Use TLS to communicate with the kafka cluster
+      --file string          Output file name (default "k2a.yaml")
+      --file-format string   Output file format (default "yaml")
+  -h, --help                 help for k2a
+      --topics string        Topics to export
 
 Global Flags:
+      --ca-file string        The optional certificate authority file for TLS client authentication
+      --cert string           The optional certificate file for client authentication
   -d, --debug                 Display debugging output in the console. (default: false)
+      --key-file string       The optional key file for client authentication
       --kurl string           Kafka cluster broker url (default "localhost:9092")
   -p, --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
       --spec-version string   Version number of the output file. (default "1.0.0")
+      --tls-skip-verify       Whether to skip TLS server cert verification (default true)
+      --use-tls               Use TLS to communicate with the kafka cluster
   -u, --username string       username for kafka sasl_plaintext auth
 ```
 
@@ -191,7 +192,7 @@ Examples:
 # no auth, local kafka, local schema registry
 cli ws
 # for SASL_PLAINTEXT
-cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --username admin-secret
+cli ws --kurl prod.kafka.com --rurl http://prod.schema-registry.com --username admin --password admin-secret
 # SASL_SSL
 ...
 
@@ -201,11 +202,16 @@ Flags:
       --port string   server port to listen (default "8080")
 
 Global Flags:
+      --ca-file string        The optional certificate authority file for TLS client authentication
+      --cert string           The optional certificate file for client authentication
   -d, --debug                 Display debugging output in the console. (default: false)
+      --key-file string       The optional key file for client authentication
       --kurl string           Kafka cluster broker url (default "localhost:9092")
   -p, --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
       --spec-version string   Version number of the output file. (default "1.0.0")
+      --tls-skip-verify       Whether to skip TLS server cert verification (default true)
+      --use-tls               Use TLS to communicate with the kafka cluster
   -u, --username string       username for kafka sasl_plaintext auth
 ```
 
@@ -226,7 +232,7 @@ cli kafka --query test
 # no auth
 cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test
 # for SASL_PLAINTEXT
-cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --username admin-secret
+cli kafka --kurl prod.kafka.com --rurl http://prod.schema-registry.com --query test --username admin --password admin-secret
 # SASL_SSL
 ...
 
@@ -235,11 +241,16 @@ Flags:
       --query string   keyword in topic name
 
 Global Flags:
+      --ca-file string        The optional certificate authority file for TLS client authentication
+      --cert string           The optional certificate file for client authentication
   -d, --debug                 Display debugging output in the console. (default: false)
+      --key-file string       The optional key file for client authentication
       --kurl string           Kafka cluster broker url (default "localhost:9092")
   -p, --password string       password for kafka sasl_plaintext auth
       --rurl string           Schema registry url (default "http://localhost:8081")
       --spec-version string   Version number of the output file. (default "1.0.0")
+      --tls-skip-verify       Whether to skip TLS server cert verification (default true)
+      --use-tls               Use TLS to communicate with the kafka cluster
   -u, --username string       username for kafka sasl_plaintext auth
 ```
 
