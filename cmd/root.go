@@ -15,8 +15,8 @@ var Debug bool
 
 var rootCmd = &cobra.Command{
 	Use:   "cli",
-	Short: "root command",
-	Long:  `root command`,
+	Short: "cli command",
+	Long:  `cli command`,
 }
 
 func Execute() {
