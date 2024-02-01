@@ -135,6 +135,36 @@ make windows
 
 ## Run
 
+### cli help
+```
+Usage:
+  cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  gen         generate code
+  help        Help about any command
+  k2a         Export an AsyncAPI specification
+  kafka       command to query topics by topic name
+  ws          Start web server
+
+Flags:
+      --ca-file string        The optional certificate authority file for TLS client authentication
+      --cert string           The optional certificate file for client authentication
+  -d, --debug                 Display debugging output in the console. (default: false)
+  -h, --help                  help for cli
+      --key-file string       The optional key file for client authentication
+      --kurl string           Kafka cluster broker url (default "localhost:9092")
+  -p, --password string       password for kafka sasl_plaintext auth
+      --rurl string           Schema registry url (default "http://localhost:8081")
+      --spec-version string   Version number of the output file. (default "1.0.0")
+      --tls-skip-verify       Whether to skip TLS server cert verification (default true)
+      --use-tls               Use TLS to communicate with the kafka cluster
+  -u, --username string       username for kafka sasl_plaintext auth
+
+Use "cli [command] --help" for more information about a command.
+```
+
 ### cli k2a help
 ```
 Export an AsyncAPI specification for a Kafka cluster and Schema Registry.
