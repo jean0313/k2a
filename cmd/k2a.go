@@ -35,7 +35,7 @@ var k2aCmd = &cobra.Command{
 # no auth, local kafka, local registry
 cli k2a --topics demo,sample
 # no auth
-cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo,sample
+cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo:p,sample:s
 # for SASL_PLAINTEXT
 cli k2a --kurl prod.kafka.com --rurl http://prod.schema-registry.com --topics demo --username admin --password admin-secret
 # SASL_SSL
@@ -51,7 +51,7 @@ func maskPassword(conf k2a.K2AConfig) k2a.K2AConfig {
 func init() {
 	rootCmd.AddCommand(k2aCmd)
 
-	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export, topic based operation can be specified using 'p' and 's', p is publish, s is subscribe, example: demo:p,sample:s")
+	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export, topic based operation can be specified using 'p' and 's', p is publish, s is subscribe, default to publish, example: demo:p,sample")
 	k2aCmd.Flags().StringVar(&config.File, "file", "k2a.yaml", "Output file name")
 
 	k2aCmd.Flags().StringVar(&config.FileFormat, "file-format", k2a.DEFAULT_FILE_FORMAT_YAML, "Output file format")
