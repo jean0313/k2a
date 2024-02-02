@@ -39,7 +39,52 @@ func TestExtractTopicAndOp(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotTopic, gotOp := extractTopicAndOp(tt.param)
+			gotTopic, gotOp, _ := extractTopicAndOp(tt.param)
+			if gotTopic != tt.wantTopic || gotOp != tt.wantOp {
+				t.Errorf("extractTopicAndOp() = (%v, %v), want (%v, %v)", gotTopic, gotOp, tt.wantTopic, tt.wantOp)
+			}
+		})
+	}
+}
+
+func TestExtractTopicAndOp_Error(t *testing.T) {
+	tests := []struct {
+		name      string
+		param     string
+		wantTopic string
+		wantOp    string
+		wantErr   bool
+	}{
+		{
+			name:      "Unsupported operation",
+			param:     "topic1:x",
+			wantTopic: "",
+			wantOp:    "",
+			wantErr:   true,
+		},
+		{
+			name:      "Empty operation",
+			param:     "topic1:",
+			wantTopic: "",
+			wantOp:    "",
+			wantErr:   true,
+		},
+		{
+			name:      "Empty topic and operation",
+			param:     ":",
+			wantTopic: "",
+			wantOp:    "",
+			wantErr:   true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotTopic, gotOp, err := extractTopicAndOp(tt.param)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("extractTopicAndOp() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 			if gotTopic != tt.wantTopic || gotOp != tt.wantOp {
 				t.Errorf("extractTopicAndOp() = (%v, %v), want (%v, %v)", gotTopic, gotOp, tt.wantTopic, tt.wantOp)
 			}
