@@ -311,12 +311,18 @@ func getTemplate(tmplFile string) *template.Template {
 
 func capitalize(str string) string {
 	runes := []rune(str)
+	if len(runes) == 0 {
+		return ""
+	}
 	runes[0] = unicode.ToUpper(runes[0])
 	return string(runes)
 }
 
 func uncapitalize(str string) string {
 	runes := []rune(str)
+	if len(runes) == 0 {
+		return ""
+	}
 	runes[0] = unicode.ToLower(runes[0])
 	return string(runes)
 }

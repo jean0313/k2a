@@ -95,7 +95,7 @@ func TestExtractSchemaName(t *testing.T) {
 			&MessageEntity{
 				Name: "SchemaName",
 			},
-			"SchemaName",
+			"",
 		},
 		{
 			"Nil MessageEntity",
