@@ -10,7 +10,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   cluster:
-    url: localhost:9092
+    url: 127.0.0.1:9093
     description: Kafka instance.
     protocol: kafka
     security:
@@ -34,107 +34,30 @@ channels:
           clientId:
             type: string
       message:
-        $ref: '#/components/messages/DemoMessage'
+        $ref: '#/components/messages/Account'
     bindings:
       kafka:
         bindingVersion: 0.4.0
         partitions: 1
         replicas: 1
         topicConfiguration: {}
-  test-rep:
-    subscribe:
-      operationId: TestRepSubscribe
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          groupId:
-            type: string
-          clientId:
-            type: string
-      message:
-        $ref: '#/components/messages/TestRepMessage'
-    bindings:
-      kafka:
-        bindingVersion: 0.4.0
-        partitions: 5
-        replicas: 1
-        topicConfiguration:
-          retention.ms: 1.2345e+07
-          delete.retention.ms: 3.6e+06
-          max.message.bytes: 64000
-        x-configs:
-          flush.messages: "1"
-  test-topic:
-    subscribe:
-      operationId: TestTopicSubscribe
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          groupId:
-            type: string
-          clientId:
-            type: string
-      message:
-        $ref: '#/components/messages/TestTopicMessage'
-    bindings:
-      kafka:
-        bindingVersion: 0.4.0
-        partitions: 1
-        replicas: 1
-        topicConfiguration:
-          max.message.bytes: 64000
-        x-configs:
-          flush.messages: "1"
 components:
   messages:
-    DemoMessage:
-      schemaFormat: application/schema+json;version=draft-07
-      contentType: application/json
-      messageId: DemoMessage
-      payload:
-        properties:
-          name:
-            type: string
-        type: object
-      name: DemoMessage
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          key:
-            type: string
-    TestRepMessage:
+    Account:
       schemaFormat: application/vnd.apache.avro;version=1.9.0
       contentType: application/avro
-      messageId: TestRepMessage
+      messageId: Account
       payload:
         fields:
+        - name: id
+          type: string
         - name: name
           type: string
-        - default: 20000
-          name: money
+        - name: amount
           type: int
-        name: account
+        name: Account
         type: record
-      name: TestRepMessage
-      bindings:
-        kafka:
-          bindingVersion: 0.3.0
-          key:
-            type: string
-    TestTopicMessage:
-      schemaFormat: application/vnd.apache.avro;version=1.9.0
-      contentType: application/avro
-      messageId: TestTopicMessage
-      payload:
-        fields:
-        - name: name
-          type: string
-        - default: 20
-          name: age
-          type: int
-        name: test
-        type: record
-      name: TestTopicMessage
+      name: Account
       bindings:
         kafka:
           bindingVersion: 0.3.0
