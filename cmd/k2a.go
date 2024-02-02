@@ -19,6 +19,11 @@ var k2aCmd = &cobra.Command{
 	Long:  `Export an AsyncAPI specification for a Kafka cluster and Schema Registry.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// zap.L().Info("cli config", zap.Any("config", maskPassword(config)))
+		err := config.InitTopicOperations()
+		if err != nil {
+			zap.L().Error("param error", zap.String("param error", err.Error()))
+			return
+		}
 		yaml, err := k2a.ExportAsyncApi(&config)
 		if err != nil {
 			zap.L().Warn("run error", zap.String("export error", err.Error()))
@@ -46,7 +51,7 @@ func maskPassword(conf k2a.K2AConfig) k2a.K2AConfig {
 func init() {
 	rootCmd.AddCommand(k2aCmd)
 
-	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export")
+	k2aCmd.Flags().StringVar(&config.Topics, "topics", "", "Topics to export, topic based operation can be specified using 'p' and 's', p is publish, s is subscribe, example: demo:p,sample:s")
 	k2aCmd.Flags().StringVar(&config.File, "file", "k2a.yaml", "Output file name")
 
 	k2aCmd.Flags().StringVar(&config.FileFormat, "file-format", k2a.DEFAULT_FILE_FORMAT_YAML, "Output file format")

@@ -19,6 +19,7 @@ func ExportAsyncApi(config *K2AConfig) ([]byte, error) {
 		return nil, err
 	}
 
+	tops := config.TopicOperationMap
 	reflector := createAsyncReflector(config)
 	messages := make(map[string]spec.Message)
 	channelCount := 0
@@ -45,7 +46,7 @@ func ExportAsyncApi(config *K2AConfig) ([]byte, error) {
 			messages[*details.channelDetails.schema.Name] = spec.Message{
 				OneOf1: &spec.MessageOneOf1{MessageEntity: details.buildMessageEntity()},
 			}
-			reflector, err = addChannel(reflector, details.channelDetails)
+			reflector, err = addChannel(reflector, details.channelDetails, tops[topic.TopicName])
 			if err != nil {
 				return nil, err
 			}
@@ -101,31 +102,57 @@ func addComponents(reflector asyncapi.Reflector, messages map[string]spec.Messag
 	return reflector
 }
 
-func addChannel(reflector asyncapi.Reflector, details channelDetails) (asyncapi.Reflector, error) {
-	channel := asyncapi.ChannelInfo{
-		Name: details.currentTopic.GetTopicName(),
-		BaseChannelItem: &spec.ChannelItem{
-			Description: details.currentTopicDescription,
-			Subscribe: &spec.Operation{
-				ID:   strcase.ToCamel(details.currentTopic.GetTopicName()) + "Subscribe",
-				Tags: details.topicLevelTags,
+func addChannel(reflector asyncapi.Reflector, details channelDetails, opName string) (asyncapi.Reflector, error) {
+	var channel asyncapi.ChannelInfo
+	if opName == "Subscribe" {
+		channel = asyncapi.ChannelInfo{
+			Name: details.currentTopic.GetTopicName(),
+			BaseChannelItem: &spec.ChannelItem{
+				Description: details.currentTopicDescription,
+				Subscribe: &spec.Operation{
+					ID:   strcase.ToCamel(details.currentTopic.GetTopicName()) + "Subscribe",
+					Tags: details.topicLevelTags,
+				},
 			},
-		},
+		}
+		if details.unmarshalledSchema != nil {
+			channel.BaseChannelItem.Subscribe.Message = &spec.Message{Reference: &spec.Reference{Ref: "#/components/messages/" + *details.schema.Name}}
+		}
+		if details.bindings != nil {
+			if details.bindings.operationBinding.Kafka != nil {
+				channel.BaseChannelItem.Subscribe.Bindings = &details.bindings.operationBinding
+			}
+			if details.bindings.channelBindings.Kafka != nil {
+				channel.BaseChannelItem.Bindings = &details.bindings.channelBindings
+			}
+		}
+	} else {
+		channel = asyncapi.ChannelInfo{
+			Name: details.currentTopic.GetTopicName(),
+			BaseChannelItem: &spec.ChannelItem{
+				Description: details.currentTopicDescription,
+				Publish: &spec.Operation{
+					ID:   strcase.ToCamel(details.currentTopic.GetTopicName()) + "Publish",
+					Tags: details.topicLevelTags,
+				},
+			},
+		}
+		if details.unmarshalledSchema != nil {
+			channel.BaseChannelItem.Publish.Message = &spec.Message{Reference: &spec.Reference{Ref: "#/components/messages/" + *details.schema.Name}}
+		}
+		if details.bindings != nil {
+			if details.bindings.operationBinding.Kafka != nil {
+				channel.BaseChannelItem.Publish.Bindings = &details.bindings.operationBinding
+			}
+			if details.bindings.channelBindings.Kafka != nil {
+				channel.BaseChannelItem.Bindings = &details.bindings.channelBindings
+			}
+		}
 	}
 	if details.mapOfMessageCompat != nil {
 		channel.BaseChannelItem.MapOfAnything = details.mapOfMessageCompat
 	}
-	if details.unmarshalledSchema != nil {
-		channel.BaseChannelItem.Subscribe.Message = &spec.Message{Reference: &spec.Reference{Ref: "#/components/messages/" + *details.schema.Name}}
-	}
-	if details.bindings != nil {
-		if details.bindings.operationBinding.Kafka != nil {
-			channel.BaseChannelItem.Subscribe.Bindings = &details.bindings.operationBinding
-		}
-		if details.bindings.channelBindings.Kafka != nil {
-			channel.BaseChannelItem.Bindings = &details.bindings.channelBindings
-		}
-	}
+
 	err := reflector.AddChannel(channel)
 	return reflector, err
 }
@@ -150,6 +177,8 @@ func processChannelDetails(details *AccountDetails) error {
 func processBindings(details *AccountDetails) error {
 	customConfigMap := make(map[string]string)
 	topicConfigMap := make(map[string]any)
+
+	tops := details.config.TopicOperationMap
 
 	var err error
 	topic := details.channelDetails.currentTopic
@@ -193,8 +222,10 @@ func processBindings(details *AccountDetails) error {
 		Kafka: &spec.KafkaMessage{
 			Key: &spec.KafkaMessageKey{Schema: map[string]any{"type": "string"}},
 		}}
+
+	topicName := topic.TopicName
 	operationBindings := spec.OperationBindingsObject{Kafka: &spec.KafkaOperation{
-		GroupID:  &spec.KafkaOperationGroupID{Schema: map[string]any{"type": "string"}},
+		GroupID:  getGroupId(topicName, tops),
 		ClientID: &spec.KafkaOperationClientID{Schema: map[string]any{"type": "string"}},
 	}}
 	bindings := &bindings{
@@ -203,6 +234,14 @@ func processBindings(details *AccountDetails) error {
 	}
 	bindings.channelBindings = spec.ChannelBindingsObject{Kafka: &channelBindings}
 	details.channelDetails.bindings = bindings
+	return nil
+}
+
+func getGroupId(topic string, topicOperationMap map[string]string) *spec.KafkaOperationGroupID {
+	op := topicOperationMap[topic]
+	if op == "Subscribe" {
+		return &spec.KafkaOperationGroupID{Schema: map[string]any{"type": "string"}}
+	}
 	return nil
 }
 

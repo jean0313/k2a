@@ -71,6 +71,11 @@ func export(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = config.InitTopicOperations()
+	if err != nil {
+		zap.L().Error("param error", zap.String("param error", err.Error()))
+		return
+	}
 	yaml, err := k2a.ExportAsyncApi(&config)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error: %v\n", err.Error()), http.StatusInternalServerError)
